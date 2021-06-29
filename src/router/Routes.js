@@ -5,18 +5,18 @@ import Login from '../views/Login'
 
 import { history } from './history'
 
-const ValidateReturn = props => {
-  const isLogged = !!localStorage.getItem('@uuid')
+// const ValidateReturn = props => {
+//   const isLogged = !!localStorage.getItem('@uuid')
  
-  return !isLogged ? <Route {...props}/> : <Redirect to='/dashboard' />
+//   return !isLogged ? <Route {...props}/> : <Redirect to='/dashboard' />
 
-}
+// }
 
-const PrivateRoute = props => {
-  const isLogged = !!localStorage.getItem('@uuid')
+// const PrivateRoute = props => {
+//   const isLogged = !!localStorage.getItem('@uuid')
   
-  return isLogged ? <Route {...props}/> : <Redirect to='/login' />
-}
+//   return isLogged ? <Route {...props}/> : <Redirect to='/login' />
+// }
 
 const Routes = () => {
 
