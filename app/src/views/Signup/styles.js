@@ -87,3 +87,31 @@ export const Logo = styled.div`
   background-color: orange;
   border-radius: 30px;
 `;
+
+export const ReturnButton = styled.button`
+  /* border: 1px solid red !important; */
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+
+  :hover {
+    color: #dc3545;
+  }
+`;
+
+export const MessageLabel = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 0px;
+  p {
+    margin: 0;
+    padding: 5px 12px 5px 0px;
+    background-color: "#fff";
+    color: ${props => (props.children.props.color)};
+    font-weight: ${props => (props.children.props.type === 'warning' ? 'bold' : 'normal')};
+    font-size: 0.8rem;
+  }
+
+`;
+

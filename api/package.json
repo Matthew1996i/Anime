@@ -16,6 +16,7 @@
     "firebase": "^9.0.1",
     "firebase-admin": "^9.11.1",
     "generate-api-key": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.5.0",
     "serverless-http": "^2.7.0"

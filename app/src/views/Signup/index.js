@@ -5,13 +5,23 @@ import { InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faAt, faUser } from '@fortawesome/free-solid-svg-icons';
 
-import { LoginContainer, LoginContent, Logo, LogoContent } from './styles';
+import urlConfig from '../../router/urlConfig';
+import history from '../../router/history';
+import { LoginContainer, LoginContent, Logo, LogoContent, ReturnButton, MessageLabel } from './styles';
 
 const Login = () => {
+  const baseURL = urlConfig[urlConfig.enviroment.api].api;
+
   const [useData, setData] = useState({
     email: '',
     password: '',
     name: '',
+  });
+
+  const [useMessage, setMessage] = useState({
+    message: '',
+    type: '',
+    color: '',
   });
 
   const captureDataLogin = (e) => {
@@ -23,9 +33,18 @@ const Login = () => {
   };
 
   const createUser = () => {
-    axios.post('http://localhost:3000/user/create', useData)
-      .then(resp => console.log(resp))
-      .catch(error => console.log(error));
+    if (!useData.name) return setMessage({ message: 'Insira um nome de como gostaria de ser chamado!', type: 'warning', color: '#ed717d' });
+
+    return axios.post(`${baseURL}/user/create`, useData)
+      .then((resp) => {
+        if (resp.data.code === 'auth/email-already-exists') return setMessage({ message: 'O email informado já está sendo usado!', type: 'warning', color: '#ed717d' });
+        if (resp.data.code === 'auth/invalid-email') return setMessage({ message: 'Email invalido!', type: 'warning', color: '#ed717d' });
+        if (resp.data.code === 'auth/invalid-password') return setMessage({ message: 'Senha Invalida!', type: 'warning', color: '#ed717d' });
+
+        // localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
+        return history.push('/login');
+      })
+      .catch(error => error);
   };
 
   return (
@@ -83,9 +102,15 @@ const Login = () => {
               value={useData.password}
             />
           </InputGroup>
+          <MessageLabel>
+            <p type={useMessage.type} color={useMessage.color}>{useMessage.message}</p>
+          </MessageLabel>
           <Button onClick={createUser} className="btn btn-success">
             <span>Criar uma conta</span>
           </Button>
+          <ReturnButton className="btn btn-return" onClick={() => history.push('/login')}>
+            <span>Cancelar</span>
+          </ReturnButton>
         </Form>
       </LoginContent>
     </LoginContainer>
