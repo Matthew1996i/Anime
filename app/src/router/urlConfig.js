@@ -1,6 +1,6 @@
 const urlConfig = {
   enviroment: {
-    api: 'local',
+    api: 'develop',
     app: 'develop',
   },
   local: {
