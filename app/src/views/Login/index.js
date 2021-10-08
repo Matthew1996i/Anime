@@ -62,11 +62,14 @@ const Login = () => {
         const { uid } = user;
 
         axios.post(`${baseURL}/user/login`, {
-          body: {
+          data: {
             uid,
           },
         })
-          .then(resp => localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token })))
+          .then((resp) => {
+            localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
+            history.push('/user/dashboard');
+          })
           .catch(error => error);
       })
       .catch((error) => {

@@ -1,7 +1,13 @@
+/*
+  change the api/app variables to:
+  Local if using locally and
+  Develop if uploading the application.
+*/
+
 const urlConfig = {
   enviroment: {
-    api: 'develop',
-    app: 'develop',
+    api: 'local',
+    app: 'local',
   },
   local: {
     api: 'http://localhost:3000',

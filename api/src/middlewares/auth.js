@@ -18,6 +18,8 @@ module.exports = (req, res, next) => {
     if (err) return res.status(401).send({ error: 'Invalid token' });
 
     req.uuid = decoded.id;
+    req.message = 'token valid!';
+
     return next();
   });
 };

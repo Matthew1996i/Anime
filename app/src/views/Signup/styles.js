@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import backgroundImage from '../../assets/images/1111604.png';
+import backgroundImage from '../../assets/images/wp9096624.webp';
 import LogoImage from '../../assets/images/newlogo.png';
 
 export const LoginContainer = styled.div`

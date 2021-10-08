@@ -105,13 +105,13 @@ const Login = () => {
           <MessageLabel>
             <p type={useMessage.type} color={useMessage.color}>{useMessage.message}</p>
           </MessageLabel>
-          <Button onClick={createUser} className="btn btn-success">
+          <Button onClick={() => createUser()} className="btn btn-success">
             <span>Criar uma conta</span>
           </Button>
-          <ReturnButton className="btn btn-return" onClick={() => history.push('/login')}>
-            <span>Cancelar</span>
-          </ReturnButton>
         </Form>
+        <ReturnButton className="btn btn-return" onClick={() => history.push('/login')}>
+          <span>Cancelar</span>
+        </ReturnButton>
       </LoginContent>
     </LoginContainer>
   );
