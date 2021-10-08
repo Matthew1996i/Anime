@@ -8,8 +8,8 @@ const urlConfig = {
     app: 'http://localhost:3001',
   },
   develop: {
-    api: 'http://18.230.195.66:3000',
-    app: 'https://guardian-db638.web.app',
+    api: 'https://api.animecontrol.xyz/',
+    app: 'https://animecontrol.xyz/',
   },
 };
 
