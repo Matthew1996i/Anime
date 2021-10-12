@@ -11,6 +11,11 @@ export const LoginContainer = styled.div`
   justify-content: center;
   align-items: center;
 
+  @media(max-width: 800px) {
+    margin-bottom: 0px;
+    height: 99.9999%;
+  }
+
   ::before{
     content: '';
     position: absolute;
@@ -36,6 +41,10 @@ export const LoginContent = styled.div`
   justify-content: center;
   border-radius: 5px;
   box-shadow: 1px 1px 10px rgba(0,0,0, 0.5);
+
+  @media(max-width: 800px) {
+    margin-top: 8rem;
+  }
 
   form {
     
@@ -84,7 +93,6 @@ export const Logo = styled.div`
   background-size: 100% 100%;
   height: 120px;
   width: 230px;
-  background-color: orange;
   border-radius: 30px;
 `;
 
