@@ -12,7 +12,7 @@ export default function Dashboard() {
 
   const [userInfo, setUserInfo] = useState();
 
-  async function getUser() {
+  function getUser() {
     const localItem = localStorage.getItem('anime-control');
 
     const objectLocal = JSON.parse(localItem);
@@ -33,6 +33,8 @@ export default function Dashboard() {
   useEffect(() => {
     getUser();
   }, []);
+
+  if (!userInfo) return <p>loading...</p>;
 
   return (
     <DashBoardContainer>
