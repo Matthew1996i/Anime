@@ -6,8 +6,8 @@
 
 const urlConfig = {
   enviroment: {
-    api: 'develop',
-    app: 'develop',
+    api: 'local',
+    app: 'local',
   },
   local: {
     api: 'http://localhost:3000',

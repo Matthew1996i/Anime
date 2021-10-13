@@ -19,6 +19,32 @@ export const NavBar = styled.nav`
   margin-top: 25px;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+`;
+
+export const NavBarItens = styled.ul`
+  padding: 0;
+  font-size: 0.9rem;
+
+  .nav-item {
+    list-style: none;
+    width: 100%;
+    padding: 10px;
+    color: #262626;
+    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+  }
+
+  .nav-item:hover {
+    background-color: #262626;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  hr {
+    margin-top: 55vh;
+  }
 `;
 
 export const Profile = styled.div`
@@ -27,6 +53,7 @@ export const Profile = styled.div`
   align-items: center;
   width: 100%;
   padding: 0px 10px;
+  margin-bottom: 80px;
 
   img {
     width: 60px;
@@ -38,5 +65,6 @@ export const Profile = styled.div`
 
   h2 {
     font-size: 1.2rem;
+    color: #747474;
   }
 `;
