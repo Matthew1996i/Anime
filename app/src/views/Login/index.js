@@ -97,11 +97,9 @@ const Login = () => {
         </LogoContent>
         <Form>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text id="basic-addon1">
-                <FontAwesomeIcon icon={faAt} />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
+            <InputGroup.Text id="basic-addon1">
+              <FontAwesomeIcon icon={faAt} />
+            </InputGroup.Text>
             <FormControl
               onChange={captureDataLogin}
               type="email"
@@ -112,11 +110,9 @@ const Login = () => {
             />
           </InputGroup>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text id="basic-addon1">
-                <FontAwesomeIcon icon={faKey} />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
+            <InputGroup.Text id="basic-addon1">
+              <FontAwesomeIcon icon={faKey} />
+            </InputGroup.Text>
             <FormControl
               onChange={captureDataLogin}
               type="password"

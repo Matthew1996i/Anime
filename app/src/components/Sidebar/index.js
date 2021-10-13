@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 
-import { Nav } from 'react-bootstrap';
+import Nav from 'react-bootstrap/Nav';
 
 import history from '../../router/history';
 
@@ -41,5 +41,5 @@ export default function Sidebar({ userInfo }) {
 }
 
 Sidebar.propTypes = {
-  userInfo: PropTypes.objectOf(object),
+  userInfo: PropTypes.objectOf(PropTypes.object),
 }.isRequired;
