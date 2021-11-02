@@ -1,19 +1,47 @@
+const randomstring = require('randomstring');
 const { config } = require('../services/firebase');
 
-const createCollection = async (req, res) => {
+const addAnime = async (req, res) => {
   const db = config.firestore();
 
+  const {
+    url,
+    title,
+    airing,
+    synopsis,
+    type,
+    episodes,
+    score,
+    members,
+    rated,
+  } = req.body;
+
   const data = {
-    name: req.body.name,
-    email: req.body.email,
-    emailVerify: req.body.emailVerify,
+    mal_id: req.body.mal_id,
+    url,
+    image_url: req.body.image_url,
+    title,
+    airing,
+    synopsis,
+    type,
+    episodes,
+    score,
+    start_date: req.body.start_date,
+    end_date: req.body.end_date,
+    members,
+    rated,
   };
 
-  db.collection('users').doc(req.body.uuid).set({ ...data })
-    .then((resp) => res.status(200).json(resp))
-    .catch((error) => res.json(error));
+  await db.collection('users').doc(req.uuid).collection('anime-list').doc(randomstring.generate())
+    .set(data)
+    .then((resp) => resp)
+    .catch((err) => err);
+
+  res.status(200).json({
+    message: 'collection created successfully!',
+  });
 };
 
 module.exports = {
-  createCollection,
+  addAnime,
 };

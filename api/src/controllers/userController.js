@@ -9,17 +9,36 @@ function generateToken(params = {}) {
 }
 
 const createUser = async (req, res) => {
-  config.auth().createUser({
+  const db = config.firestore();
+
+  const userResp = await config.auth().createUser({
     email: req.body.email,
     password: req.body.password,
     displayName: req.body.name,
   })
-    .then((resp) => {
-      res.status(200).json({
-        token: generateToken({ id: resp.uid }),
-      });
-    })
-    .catch((error) => res.json(error));
+    .then((resp) => resp)
+    .catch((error) => error);
+
+  if (!userResp.uid) {
+    return res.status(200).json(userResp);
+  }
+
+  try {
+    db.collection('users').doc(userResp.uid).set({
+      email: req.body.email,
+      displayName: req.body.displayName,
+      emailVerify: false,
+    });
+
+    return res.status(200).json({
+      token: generateToken({ id: userResp.uid }),
+    });
+  } catch {
+    return res.status(200).json({
+      token: generateToken({ id: userResp.uid }),
+      message: 'error creating anime list',
+    });
+  }
 };
 
 const getUser = async (req, res) => {

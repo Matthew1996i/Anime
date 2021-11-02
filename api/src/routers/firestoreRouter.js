@@ -1,6 +1,9 @@
 const { Router } = require('express');
 const { firestoreController } = require('../controllers');
+const authMiddleware = require('../middlewares/auth');
 
-const userRouter = Router();
+const firestoreRouter = Router();
 
-userRouter.post('/createcollection', firestoreController.createCollection);
+firestoreRouter.post('/newanime', authMiddleware, firestoreController.addAnime);
+
+module.exports = firestoreRouter;
