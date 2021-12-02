@@ -5,21 +5,17 @@ import { InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faAt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-// import { collection, getDocs } from 'firebase/firestore';
-// import db from '../../services/firebase/firestore';
-
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-
 import urlConfig from '../../router/urlConfig';
 import history from '../../router/history';
-import config from '../../services/firebase/firebase-config';
 
-import { LoginContainer,
+import {
+  LoginContainer,
   LoginContent,
   Logo,
   LogoContent,
   CreateAccontButton,
-  MessageLabel } from './styles';
+  MessageLabel,
+} from './styles';
 
 const Login = () => {
   const baseURL = urlConfig[urlConfig.enviroment.api].api;
@@ -51,43 +47,20 @@ const Login = () => {
   };
 
   function doLogin() {
-    const auth = getAuth(config);
-
     if (!useData.email) return setMessage({ message: 'Por favor, informe o email', type: 'warning', color: '#ed717d' });
     if (!useData.password) return setMessage({ message: 'Por favor, informe a senha', type: 'warning', color: '#ed717d' });
 
-    return signInWithEmailAndPassword(auth, useData.email, useData.password)
-      .then((userCredential) => {
-        const { user } = userCredential;
-        const { uid } = user;
-
-        axios.post(`${baseURL}/user/login`, {
-          data: {
-            uid,
-          },
-        })
-          .then((resp) => {
-            localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
-            history.push('/user/dashboard');
-          })
-          .catch(error => error);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-
-        if (errorCode === 'auth/user-not-found') return setMessage({ message: 'Usuário não encontrado!', type: 'warning', color: '#ed717d' });
-        if (errorCode === 'auth/wrong-password') return setMessage({ message: 'Senha incorreta!', type: 'warning', color: '#ed717d' });
-
-        return errorCode;
+    return axios.post(`${baseURL}/user/login`, {
+      email: useData.email,
+      password: useData.password,
+    })
+      .then((result) => {
+        const { message } = result.data;
+        return setMessage({ message: message, type: 'warning', color: '#ed717d' });
+      }).catch((err) => {
+        console.log(err);
       });
   }
-
-  // useEffect(async () => {
-  //   const querySnapshot = await getDocs(collection(db, 'users'));
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.data());
-  //   });
-  // }, []);
 
   return (
     <LoginContainer>

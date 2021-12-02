@@ -27,7 +27,7 @@
     ],
     "linebreak-style": [
       "error",
-      "unix"
+      "windows"
     ],
     "react/react-in-jsx-scope": "off",
     "no-console": "off",
