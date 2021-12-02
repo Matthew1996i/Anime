@@ -55,11 +55,11 @@ module.exports = {
       },
     });
 
-    if (!checkUser) return res.status(404).json({ message: 'User not found' });
+    if (!checkUser) return res.status(200).json({ message: 'User not found' });
 
     const istrue = bcrypt.compareSync(password, checkUser.password);
 
-    if (!istrue) return res.status(200).json({ message: 'Incorrect password or username' });
+    if (!istrue) return res.status(200).json({ message: 'Incorrect password or email' });
 
     const token = generateToken({
       email: checkUser.email,
