@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
-const { config } = require('../services/firebase');
+const bcrypt = require('bcrypt');
+
 const authConfig = require('../config/auth.json');
+
+const User = require('../models/User');
+
+const saltRounds = 10;
 
 function generateToken(params = {}) {
   return jwt.sign(params, authConfig.secret, {
@@ -8,68 +13,58 @@ function generateToken(params = {}) {
   });
 }
 
-const createUser = async (req, res) => {
-  const db = config.firestore();
-
-  const userResp = await config.auth().createUser({
-    email: req.body.email,
-    password: req.body.password,
-    displayName: req.body.name,
-  })
-    .then((resp) => resp)
-    .catch((error) => error);
-
-  if (!userResp.uid) {
-    return res.status(200).json(userResp);
-  }
-
-  try {
-    db.collection('users').doc(userResp.uid).set({
-      email: req.body.email,
-      displayName: req.body.displayName,
-      emailVerify: false,
-    });
-
-    return res.status(200).json({
-      token: generateToken({ id: userResp.uid }),
-    });
-  } catch {
-    return res.status(200).json({
-      token: generateToken({ id: userResp.uid }),
-      message: 'error creating anime list',
-    });
-  }
-};
-
-const getUser = async (req, res) => {
-  const { message, uuid } = req;
-  await config.auth().getUser(uuid)
-    .then((resp) => {
-      const newResp = {
-        ...resp,
-        message,
-      };
-      res.status(200).json(newResp);
-    })
-    .catch((error) => res.json(error));
-};
-
-const UserLogin = async (req, res) => {
-  const { uid } = req.body.data;
-
-  if (!uid) {
-    return res.send({
-      errorCode: 'auth/uid-uninformed',
-    });
-  }
-
-  return res.send({
-    token: generateToken({ id: uid }),
-  });
-};
-
 module.exports = {
-  createUser,
-  getUser,
-  UserLogin,
+  async createUser(req, res) {
+    const { name, email, password } = req.body;
+
+    if (
+      !name
+      || !email
+      || !password
+      || password === ' '
+      || password === undefined
+      || password === null) return res.status(400).json({ message: 'Fields cannot be equal to empty or undefined' });
+
+    const checkUser = await User.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (checkUser) return res.status(200).json({ message: 'There is already a user for this email' });
+
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hashPassword = bcrypt.hashSync(password, salt);
+
+    const dataUser = {
+      name, email, password: hashPassword, emailverify: 0,
+    };
+
+    const user = await User.create(dataUser);
+
+    return res.status(200).json(user);
+  },
+
+  async UserLogin(req, res) {
+    const { email, password } = req.body;
+
+    const checkUser = await User.findOne({
+      attributes: ['email', 'password', 'emailverify'],
+      where: {
+        email,
+      },
+    });
+
+    if (!checkUser) return res.status(404).json({ message: 'User not found' });
+
+    const istrue = bcrypt.compareSync(password, checkUser.password);
+
+    if (!istrue) return res.status(200).json({ message: 'Incorrect password or username' });
+
+    const token = generateToken({
+      email: checkUser.email,
+    });
+
+    return res.status(200).json({ token });
+  },
 };
