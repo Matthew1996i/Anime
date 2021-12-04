@@ -6,6 +6,8 @@ const userRouter = Router();
 
 userRouter.post('/create', userController.createUser);
 userRouter.post('/login', userController.UserLogin);
+userRouter.post('/sendemailpasswordrecovery', userController.SendEmailPasswordRecovery);
+userRouter.post('/passwordrecovery', userController.PasswordRecovery);
 // userRouter.post('/getuser', authMiddleware, userController.getUser);
 
 module.exports = userRouter;

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon --trace-warnings src/server.js"
   },
   "dependencies": {
     "axios": "^0.21.2",
@@ -18,8 +18,10 @@
     "generate-api-key": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
+    "node-mailjet": "^3.3.4",
     "randomstring": "^1.2.1",
     "sequelize": "^6.9.0",
+    "sequelize-cli": "^6.3.0",
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
