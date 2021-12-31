@@ -7,6 +7,10 @@ class User extends Model {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       emailverify: DataTypes.INTEGER,
+      passwordresettoken: DataTypes.STRING,
+      passwordresetexpires: DataTypes.DATE,
+      created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
     }, {
       sequelize: connection,
     });

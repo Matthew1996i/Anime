@@ -20,6 +20,7 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+        select: false,
       },
       emailverify: {
         type: Sequelize.INTEGER,
