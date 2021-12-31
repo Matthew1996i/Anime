@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon --trace-warnings src/server.js"
+    "dev": "nodemon --trace-warnings src/server.js",
+    "pd": "pm2 start server.js --name=api"
   },
   "dependencies": {
     "axios": "^0.21.2",
