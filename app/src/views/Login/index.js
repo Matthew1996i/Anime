@@ -8,11 +8,8 @@ import { faKey, faAt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 // import { collection, getDocs } from 'firebase/firestore';
 // import db from '../../services/firebase/firestore';
 
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-
 import urlConfig from '../../router/urlConfig';
 import history from '../../router/history';
-import config from '../../services/firebase/firebase-config';
 
 import { LoginContainer,
   LoginContent,
@@ -28,6 +25,7 @@ const Login = () => {
     email: '',
     password: '',
   });
+
   const [useMessage, setMessage] = useState({
     message: '',
     type: '',
@@ -50,44 +48,39 @@ const Login = () => {
     });
   };
 
-  function doLogin() {
-    const auth = getAuth(config);
+  function doLogin(e) {
+    e.preventDefault();
 
     if (!useData.email) return setMessage({ message: 'Por favor, informe o email', type: 'warning', color: '#ed717d' });
     if (!useData.password) return setMessage({ message: 'Por favor, informe a senha', type: 'warning', color: '#ed717d' });
 
-    return signInWithEmailAndPassword(auth, useData.email, useData.password)
-      .then((userCredential) => {
-        const { user } = userCredential;
-        const { uid } = user;
+    const { email, password } = useData;
 
-        axios.post(`${baseURL}/user/login`, {
-          data: {
-            uid,
-          },
-        })
-          .then((resp) => {
-            localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
-            history.push('/user/dashboard');
-          })
-          .catch(error => error);
+    return axios.post(`${baseURL}/user/login`, {
+      email, password,
+    })
+      .then((resp) => {
+        if (resp.data.message === 'Incorrect password or email') {
+          return setMessage({
+            message: 'Senha ou Email incorreto',
+            type: 'warning',
+            color: 'red',
+          });
+        }
+
+        if (resp.data.message === 'User not found') {
+          return setMessage({
+            message: 'Email informado não encontrado',
+            type: 'warning',
+            color: 'red',
+          });
+        }
+
+        localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
+        return history.push('/user/dashboard');
       })
-      .catch((error) => {
-        const errorCode = error.code;
-
-        if (errorCode === 'auth/user-not-found') return setMessage({ message: 'Usuário não encontrado!', type: 'warning', color: '#ed717d' });
-        if (errorCode === 'auth/wrong-password') return setMessage({ message: 'Senha incorreta!', type: 'warning', color: '#ed717d' });
-
-        return errorCode;
-      });
+      .catch(err => setMessage(err));
   }
-
-  // useEffect(async () => {
-  //   const querySnapshot = await getDocs(collection(db, 'users'));
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.data());
-  //   });
-  // }, []);
 
   return (
     <LoginContainer>
@@ -125,7 +118,7 @@ const Login = () => {
           <MessageLabel>
             <p type={useMessage.type} color={useMessage.color}>{useMessage.message}</p>
           </MessageLabel>
-          <Button onClick={() => doLogin()}>
+          <Button type="submit" onClick={e => doLogin(e)}>
             <FontAwesomeIcon icon={faSignInAlt} />
             <span>Log in</span>
           </Button>

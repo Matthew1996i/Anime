@@ -1,19 +1,21 @@
 import React from 'react';
 import { Route, Router, Switch, Redirect } from 'react-router-dom';
 
+import verifyToken from '../dist/Infraestructury/authentication/blank';
+
 import Login from '../views/Login';
 import Signup from '../views/Signup';
 import Dashboard from '../views/Dashboard';
 
 import history from './history';
 
-const PrivateRoute = (props) => {
-  const getLocalStorage = JSON.parse(localStorage.getItem('anime-control'));
+async function checkToken() {
+  const isLogged = await verifyToken();
 
-  const isLogged = getLocalStorage?.token;
+  return isLogged;
+}
 
-  return isLogged ? <Route {...props} /> : <Redirect to="/login" />;
-};
+const PrivateRoute = props => (checkToken() ? <Route {...props} /> : <Redirect to="/login" />);
 
 const Routes = () => (
   <Router history={history}>
