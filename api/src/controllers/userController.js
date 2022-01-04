@@ -137,4 +137,10 @@ module.exports = {
 
     return res.json({ message: 'password updated' });
   },
+
+  async VerifyTokenUser(req, res) {
+    const { message } = req.body;
+
+    res.status(200).json(message);
+  },
 };

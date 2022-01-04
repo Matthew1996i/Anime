@@ -17,8 +17,8 @@ module.exports = (req, res, next) => {
   return jwt.verify(token, authConfig.secret, (err, decoded) => {
     if (err) return res.status(401).send({ error: 'Invalid token' });
 
-    req.uuid = decoded.id;
-    req.message = 'token valid!';
+    req.body.email = decoded.email;
+    req.body.message = 'token valid!';
 
     return next();
   });

@@ -6,6 +6,7 @@ const { mailerToken } = require('../../config/auth.json');
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = mailerToken;
 
+// eslint-disable-next-line no-unused-vars
 const apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
 const emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign();
 
@@ -20,9 +21,3 @@ emailCampaigns.body = {
 
   scheduledAt: '2018-01-01 00:00:01',
 };
-
-apiInstance.createEmailCampaign(emailCampaigns).then((data) => {
-  console.log(`API called successfully. Returned data: ${data}`);
-}, (error) => {
-  console.error(error);
-});
