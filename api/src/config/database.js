@@ -1,8 +1,9 @@
 module.exports = {
   dialect: 'mysql',
-  host: 'localhost',
+  host: '192.168.18.49',
+  port: '3306',
   username: 'root',
-  password: 'root',
+  password: '',
   database: 'anime_control',
   define: {
     timestamps: true,

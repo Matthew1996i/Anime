@@ -20,6 +20,8 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "node-mailjet": "^3.3.4",
+    "nodemailer": "^6.7.2",
+    "nodemailer-express-handlebars": "^5.0.0",
     "randomstring": "^1.2.1",
     "sequelize": "^6.9.0",
     "sequelize-cli": "^6.3.0",
