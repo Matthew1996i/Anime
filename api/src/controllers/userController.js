@@ -1,15 +1,16 @@
+require("dotenv/config");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-const authConfig = require('../config/auth.json');
+const mailer = require('../modules/mailer')
 
 const User = require('../models/User');
 
 const saltRounds = 10;
 
 function generateToken(params = {}) {
-  return jwt.sign(params, authConfig.secret, {
+  return jwt.sign(params, process.env.API_SECRET, {
     expiresIn: 86400,
   });
 }
@@ -74,34 +75,48 @@ module.exports = {
   },
 
   async SendEmailPasswordRecovery(req, res) {
-    const { email } = req.body;
-    if (!email) return res.status(406).json({ message: 'email address not entered!' });
+    try {
+      const { email } = req.body;
+    
+      if (!email) return res.status(406).json({ message: 'email address not entered!' });
 
-    const userFound = await User.findOne({
-      attributes: ['email'],
-      where: {
-        email,
-      },
-    });
+      const userFound = await User.findOne({
+        attributes: ['email', 'name'],
+        where: {
+          email,
+        },
+      });
 
-    if (!userFound) return res.status(404).json({ message: 'There is no user with the email entered' });
+      if (!userFound) return res.status(404).json({ message: 'There is no user with the email entered' });
 
-    const token = crypto.randomBytes(20).toString('hex');
-    const now = new Date();
-    now.setHours(now.getHours() + 1);
+      
 
-    await User.update({ passwordresettoken: token, passwordresetexpires: now }, {
-      where: {
-        email,
-      },
-    });
+      const token = crypto.randomBytes(20).toString('hex');
+      const now = new Date();
+      now.setHours(now.getHours() + 1);
 
-    now.setHours(now.getHours() - 3);
+      await User.update({ passwordresettoken: token, passwordresetexpires: now }, {
+        where: {
+          email,
+        },
+      });
 
-    return res.status(200).json({
-      passwordresettoken: token,
-      passwordresetexpires: now,
-    });
+      now.setHours(now.getHours() - 3);
+
+      mailer.sendMail({
+        to: email,
+        from: 'noreply@animecontrol.xyz',
+        template: 'auth/forgot_password',
+        context: { name: userFound.name },
+      },  (err) => {
+        if (err) return res.status(400).send({ message: 'Cannot send forgot password email', error: err })
+
+        return res.send();
+      })
+
+    } catch (err) {
+      res.status(400).json({ error: 'Error on forgot password, try again' })
+    }
   },
 
   async PasswordRecovery(req, res) {
