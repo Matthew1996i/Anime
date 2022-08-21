@@ -2,15 +2,20 @@ const nodemailer = require('nodemailer');
 const hbs = require('nodemailer-express-handlebars');
 const path = require('path')
 
+const mailTrap = require('../config/mail')
+
 const {
-  host, port, user, pass,
-} = require('../config/mail.json');
+  host,
+  port,
+  auth
+} = mailTrap
 
 const transport = nodemailer.createTransport({
   host,
   port,
-  auth: { user, pass },
+  auth
 });
+
 
 transport.use('compile', hbs({
   viewEngine: {

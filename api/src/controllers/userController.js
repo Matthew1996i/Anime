@@ -1,8 +1,8 @@
+require("dotenv/config");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-const authConfig = require('../config/auth.json');
 const mailer = require('../modules/mailer')
 
 const User = require('../models/User');
@@ -10,7 +10,7 @@ const User = require('../models/User');
 const saltRounds = 10;
 
 function generateToken(params = {}) {
-  return jwt.sign(params, authConfig.secret, {
+  return jwt.sign(params, process.env.API_SECRET, {
     expiresIn: 86400,
   });
 }
@@ -106,10 +106,10 @@ module.exports = {
       mailer.sendMail({
         to: email,
         from: 'noreply@animecontrol.xyz',
-        template: 'auth/forgo_password',
+        template: 'auth/forgot_password',
         context: { name: userFound.name },
       },  (err) => {
-        if (err) return res.status(400).send({ error: 'Cannot send forgot password email' })
+        if (err) return res.status(400).send({ message: 'Cannot send forgot password email', error: err })
 
         return res.send();
       })
