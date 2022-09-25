@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import { InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faAt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-// import { collection, getDocs } from 'firebase/firestore';
-// import db from '../../services/firebase/firestore';
 
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-
-import urlConfig from '../../router/urlConfig';
 import history from '../../router/history';
-import config from '../../services/firebase/firebase-config';
+import api from '../../services/api';
 
 import { LoginContainer,
   LoginContent,
@@ -22,12 +17,12 @@ import { LoginContainer,
   MessageLabel } from './styles';
 
 const Login = () => {
-  const baseURL = urlConfig[urlConfig.enviroment.api].api;
-
+  const thisState = useSelector(state => state);
   const [useData, setData] = useState({
     email: '',
     password: '',
   });
+
   const [useMessage, setMessage] = useState({
     message: '',
     type: '',
@@ -50,44 +45,31 @@ const Login = () => {
     });
   };
 
-  function doLogin() {
-    const auth = getAuth(config);
+  async function doLogin() {
+    const { email, password } = await useData;
 
-    if (!useData.email) return setMessage({ message: 'Por favor, informe o email', type: 'warning', color: '#ed717d' });
-    if (!useData.password) return setMessage({ message: 'Por favor, informe a senha', type: 'warning', color: '#ed717d' });
+    if (!email) return setMessage({ message: 'Por favor, informe o email', type: 'warning', color: '#ed717d' });
+    if (!password) return setMessage({ message: 'Por favor, informe a senha', type: 'warning', color: '#ed717d' });
 
-    return signInWithEmailAndPassword(auth, useData.email, useData.password)
-      .then((userCredential) => {
-        const { user } = userCredential;
-        const { uid } = user;
+    return api.post('/user/login', { email, password })
+      .then(async (userCredential) => {
+        if (userCredential.data.message === 'Incorrect password or email') return setMessage({ message: 'Senha incorreta!', type: 'warning', color: '#ed717d' });
+        if (userCredential.data.message === 'User not found') return setMessage({ message: 'Usuario não encontrado!', type: 'warning', color: '#ed717d' });
 
-        axios.post(`${baseURL}/user/login`, {
-          data: {
-            uid,
-          },
-        })
-          .then((resp) => {
-            localStorage.setItem('anime-control', JSON.stringify({ token: resp.data.token }));
-            history.push('/user/dashboard');
-          })
-          .catch(error => error);
+        const { token } = await userCredential.data;
+
+        await localStorage.setItem('@anime-control', JSON.stringify({ token }));
+
+        return history.push('/user/dashboard');
       })
       .catch((error) => {
-        const errorCode = error.code;
+        if (error) return setMessage({ message: 'Erro ao efetuar o login', type: 'warning', color: '#ed717d' });
 
-        if (errorCode === 'auth/user-not-found') return setMessage({ message: 'Usuário não encontrado!', type: 'warning', color: '#ed717d' });
-        if (errorCode === 'auth/wrong-password') return setMessage({ message: 'Senha incorreta!', type: 'warning', color: '#ed717d' });
-
-        return errorCode;
+        return error;
       });
   }
 
-  // useEffect(async () => {
-  //   const querySnapshot = await getDocs(collection(db, 'users'));
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.data());
-  //   });
-  // }, []);
+  console.log(thisState);
 
   return (
     <LoginContainer>
@@ -107,6 +89,7 @@ const Login = () => {
               aria-label="Email"
               aria-describedby="basic-addon1"
               value={useData.email}
+              onKeyUp={e => (e.key === 'Enter' ? doLogin() : '')}
             />
           </InputGroup>
           <InputGroup className="mb-3">
@@ -118,8 +101,9 @@ const Login = () => {
               type="password"
               placeholder="Password"
               aria-label="Password"
-              aria-describedby="basic-addon1"
+              aria-describedby="basic-addon1F"
               value={useData.password}
+              onKeyUp={e => (e.key === 'Enter' ? doLogin() : '')}
             />
           </InputGroup>
           <MessageLabel>

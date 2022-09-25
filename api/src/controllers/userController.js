@@ -52,26 +52,33 @@ module.exports = {
   },
 
   async UserLogin(req, res) {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    const checkUser = await User.findOne({
-      attributes: ['email', 'password', 'emailverify'],
-      where: {
-        email,
-      },
-    });
+      if(!email) return res.status(400).json({ message: 'values invalid or undefined' })
 
-    if (!checkUser) return res.status(200).json({ message: 'User not found' });
+      const checkUser = await User.findOne({
+        attributes: ['id', 'email', 'password', 'emailverify'],
+        where: {
+          email,
+        },
+      });
 
-    const istrue = bcrypt.compareSync(password, checkUser.password);
+      if (!checkUser) return res.status(200).json({ message: 'User not found' });
 
-    if (!istrue) return res.status(200).json({ message: 'Incorrect password or email' });
+      const istrue = bcrypt.compareSync(password, checkUser.password);
 
-    const token = generateToken({
-      email: checkUser.email,
-    });
+      if (!istrue) return res.status(200).json({ message: 'Incorrect password or email' });
 
-    return res.status(200).json({ token });
+      const token = generateToken({
+        email: checkUser.email,
+        id: checkUser.id,
+      });
+
+      return res.status(200).json({ token });
+    } catch(error) {
+      return res.status(500).json(error);
+    }
   },
 
   async SendEmailPasswordRecovery(req, res) {
@@ -151,5 +158,9 @@ module.exports = {
     });
 
     return res.json({ message: 'password updated' });
+  },
+
+  async getUser(req, res) {
+    return res.json({ message: 'ok' });
   },
 };
